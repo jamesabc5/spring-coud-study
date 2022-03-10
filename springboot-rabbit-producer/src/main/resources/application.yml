@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: rabbitmq-producer
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: james
+    #消息的回调 publisher-confirm-type 有三种参数  默认为NONE（禁用发布确认模式） CORRELATED（发布消息到交换器后触发回调方法）
+    #SIMPLE值经测试有两种效果，其一效果和CORRELATED值一样会触发回调方法，其二在发布消息成功后使用rabbitTemplate调用waitForConfirms或waitForConfirmsOrDie方法等待broker节点返回发送结果，根据返回结果来判定下一步的逻辑，要注意的点是waitForConfirmsOrDie方法如果返回false则会关闭channel，则接下来无法发送消息到broker
+    publisher-confirm-type: correlated
+    #publisher-returns 参数配置为true后  如果消息从交换机到队列的时候没有找到该队列就会触发rabbitconfig里面的setReturnCallback回调函数
+    publisher-returns: true
+
+server:
+  port: 8901
+
+

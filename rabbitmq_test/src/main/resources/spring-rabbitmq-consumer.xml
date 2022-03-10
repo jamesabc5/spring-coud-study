@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/rabbit
+       http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+
+       <!--加载配置文件-->
+       <context:property-placeholder location="classpath:rabbitmq.properties"/>
+       <!--定义rabbitmq连接工厂-->
+    <rabbit:connection-factory id="connectionFactory" host="${rabbitmq.host}"
+                               port="${rabbitmq.port}"
+                               username="${rabbitmq.username}"
+                               password="${rabbitmq.password}"
+                               virtual-host="${rabbitmq.virtual-host}"
+    />
+    <bean id="fanoutlistener1" class="com.james.rabbitmq_test.FanoutListener"/>
+    <bean id="fanoutlistener2" class="com.james.rabbitmq_test.FanoutListener2"/>
+    <rabbit:listener-container connection-factory="connectionFactory" auto-declare="true">
+        <rabbit:listener ref="fanoutlistener1" queue-names="spring-fanout-queue1"/>
+        <rabbit:listener ref="fanoutlistener2" queue-names="spring-fanout-queue2"/>
+    </rabbit:listener-container>
+</beans>
